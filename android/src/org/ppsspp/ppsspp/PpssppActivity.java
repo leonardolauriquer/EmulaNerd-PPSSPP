@@ -172,6 +172,11 @@ public class PpssppActivity extends AppCompatActivity implements SensorEventList
 
 	public static boolean libraryLoaded = false;
 
+	// The EmulaNerd host owns the launch Activity and already handles the
+	// virtual-device orientation transition. Recreating here can start a second
+	// NativeInit while the first boot is pending on BlueStacks.
+	public static boolean ignoreInitialBadOrientation = false;
+
 	public static void applyAchievementsHostOverride(String host) {
 		if (!initialized || !libraryLoaded || host == null || host.isEmpty()) {
 			return;

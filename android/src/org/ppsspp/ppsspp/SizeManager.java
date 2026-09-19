@@ -68,10 +68,14 @@ public class SizeManager implements SurfaceHolder.Callback {
 		boolean requestedPortrait = requestedOr == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT || requestedOr == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
 		boolean detectedPortrait = pixelHeight > pixelWidth;
 		if (badOrientationCount < 3 && requestedPortrait != detectedPortrait && requestedOr != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED && requestedOr != ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE && requestedOr != ActivityInfo.SCREEN_ORIENTATION_SENSOR) {
-			Log.e(TAG, "Bad orientation detected (w=" + pixelWidth + " h=" + pixelHeight + "! Recreating activity.");
-			badOrientationCount++;
-			activity.recreate();
-			return;
+			if (PpssppActivity.ignoreInitialBadOrientation) {
+				Log.w(TAG, "Bad orientation detected but ignored for integrated host (w=" + pixelWidth + " h=" + pixelHeight + ").");
+			} else {
+				Log.e(TAG, "Bad orientation detected (w=" + pixelWidth + " h=" + pixelHeight + "! Recreating activity.");
+				badOrientationCount++;
+				activity.recreate();
+				return;
+			}
 		} else if (requestedPortrait == detectedPortrait) {
 			Log.i(TAG, "Correct orientation detected, resetting orientation counter.");
 			badOrientationCount = 0;
