@@ -733,29 +733,16 @@ void MainScreen::OnCredits(UI::EventParams &e) {
 }
 
 void LaunchBuyGold(ScreenManager *screenManager) {
-	if (System_GetPropertyBool(SYSPROP_USE_IAP)) {
-		screenManager->push(new IAPScreen(true));
-	} else if (System_GetPropertyBool(SYSPROP_USE_APP_STORE)) {
-#if PPSSPP_PLATFORM(ANDROID)
-		LaunchPlayStoreOrWebsiteGold();
-#else
-		screenManager->push(new IAPScreen(false));
-#endif
-	} else {
-#if PPSSPP_PLATFORM(IOS_APP_STORE)
-		System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://www.ppsspp.org/buygold_ios");
-#else
-		System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://www.ppsspp.org/buygold");
-#endif
-	}
+	// The EmulaNerd fork does not expose PPSSPP's commercial flows.
+	(void)screenManager;
 }
 
 void MainScreen::OnPPSSPPOrg(UI::EventParams &e) {
-	System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://www.ppsspp.org");
+	// Kept as a no-op for source compatibility with the upstream interface.
 }
 
 void MainScreen::OnForums(UI::EventParams &e) {
-	System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://forums.ppsspp.org");
+	// Kept as a no-op for source compatibility with the upstream interface.
 }
 
 void MainScreen::dialogFinished(const Screen *dialog, DialogResult result) {
