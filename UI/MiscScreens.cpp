@@ -510,20 +510,13 @@ private:
 };
 
 std::string_view CreditsScreen::GetTitle() const {
-	auto mm = GetI18NCategory(I18NCat::MAINMENU);
-	return mm->T("About PPSSPP");
+	return "EmulaNerd";
 }
 
 void CreditsScreen::CreateDialogViews(UI::ViewGroup *parent) {
 	using namespace UI;
 
-	auto di = GetI18NCategory(I18NCat::DIALOG);
-	auto cr = GetI18NCategory(I18NCat::PSPCREDITS);
-	auto mm = GetI18NCategory(I18NCat::MAINMENU);
-
 	const bool portrait = GetDeviceOrientation() == DeviceOrientation::Portrait;
-
-	const bool gold = System_GetPropertyBool(SYSPROP_APP_GOLD);
 
 	/*
 	if (System_GetPropertyBool(SYSPROP_APP_GOLD)) {
@@ -554,41 +547,6 @@ void CreditsScreen::CreateDialogViews(UI::ViewGroup *parent) {
 		right->Add(new Spacer(0.0f, new LinearLayoutParams(1.0f)));
 	}
 
-	int rightYOffset = 0;
-	if (!System_GetPropertyBool(SYSPROP_APP_GOLD)) {
-		ScreenManager *sm = screenManager();
-		Choice *gold = new Choice(mm->T("Buy PPSSPP Gold"));
-		gold->SetIconRight(ImageID("I_ICON_GOLD"), 0.5f);
-		gold->SetImageScale(0.6f);  // for the left-icon in case of vertical.
-		gold->SetShine(true);
-
-		left->Add(gold)->OnClick.Add([sm](UI::EventParams) {
-			LaunchBuyGold(sm);
-		});
-		rightYOffset = 74;
-	}
-	left->Add(new Choice(cr->T("PPSSPP Forums"), ImageID("I_LINK_OUT")))->OnClick.Add([](UI::EventParams &e) {
-		System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://forums.ppsspp.org");
-	});
-	left->Add(new Choice(cr->T("Discord"), ImageID("I_LOGO_DISCORD")))->OnClick.Add([](UI::EventParams &e) {
-		System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://discord.gg/5NJB6dD");
-	});
-	left->Add(new Choice("www.ppsspp.org", ImageID("I_LINK_OUT")))->OnClick.Add([](UI::EventParams &e) {
-		System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://www.ppsspp.org");
-	});
-	right->Add(new Choice(cr->T("Privacy Policy"), ImageID("I_LINK_OUT")))->OnClick.Add([](UI::EventParams &e) {
-		System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://www.ppsspp.org/privacy");
-	});
-	right->Add(new Choice(cr->T("@PPSSPP_emu"), ImageID("I_LOGO_X")))->OnClick.Add([](UI::EventParams &e) {
-		System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://x.com/PPSSPP_emu");
-	});
-
-	if (System_GetPropertyBool(SYSPROP_SUPPORTS_SHARE_TEXT)) {
-		right->Add(new Choice(cr->T("Share PPSSPP"), ImageID("I_SHARE")))->OnClick.Add([](UI::EventParams &e) {
-			auto cr = GetI18NCategory(I18NCat::PSPCREDITS);
-			System_ShareText(cr->T("CheckOutPPSSPP", "Check out PPSSPP, the awesome PSP emulator: https://www.ppsspp.org/"));
-		});
-	}
 }
 
 void CreditsScreen::update() {
