@@ -653,6 +653,12 @@ static void parse_args(std::vector<std::string> &args, const std::string value) 
 #define EARLY_LOG(...)  __android_log_print(ANDROID_LOG_INFO, "PPSSPP", __VA_ARGS__)
 
 static bool bFirstResume = false;
+static std::string g_graphicsBackendOverride;
+
+extern "C" void Java_org_ppsspp_ppsspp_NativeApp_setGraphicsBackendOverride
+	(JNIEnv *env, jclass, jstring jbackend) {
+	g_graphicsBackendOverride = GetJavaString(env, jbackend);
+}
 
 extern "C" void Java_org_ppsspp_ppsspp_NativeApp_init
 (JNIEnv * env, jclass, jstring jmodel, jint jdeviceType, jstring jlangRegion, jstring japkpath,
@@ -755,6 +761,16 @@ extern "C" void Java_org_ppsspp_ppsspp_NativeApp_init
 
 	// TODO: We should be able to do the Vulkan init in parallel with NativeInit.
 	NativeInit((int)args.size(), &args[0], cmdLineOptions, user_data_path.c_str(), externalStorageDir.c_str(), cacheDir.c_str());
+
+	// The host passes graphics selection in a dedicated Android extra so the
+	// ROM path can remain a single shortcut argument. Apply it after config
+	// loading and before the Android render context is created.
+	if (g_graphicsBackendOverride == "opengl") {
+		g_Config.iGPUBackend = (int)GPUBackend::OPENGL;
+		g_Config.bSoftwareRendering = false;
+		SetGPUBackend(GPUBackend::OPENGL);
+		EARLY_LOG("NativeApp.init(): host graphics override: OpenGL");
+	}
 
 	bFirstResume = true;
 

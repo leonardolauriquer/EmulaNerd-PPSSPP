@@ -167,6 +167,8 @@ public class PpssppActivity extends AppCompatActivity implements SensorEventList
 	public static final String SHORTCUT_EXTRA_KEY = "org.ppsspp.ppsspp.Shortcuts";
 	// Key used for debugging.
 	public static final String ARGS_EXTRA_KEY = "org.ppsspp.ppsspp.Args";
+	// Optional host override applied before the native graphics context exists.
+	public static final String GRAPHICS_BACKEND_EXTRA_KEY = "org.ppsspp.ppsspp.GraphicsBackend";
 
 	private static boolean m_hasNoNativeBinary = false;
 
@@ -652,6 +654,11 @@ public class PpssppActivity extends AppCompatActivity implements SensorEventList
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		String graphicsBackend = getIntent().getStringExtra(GRAPHICS_BACKEND_EXTRA_KEY);
+		if (libraryLoaded && graphicsBackend != null && !graphicsBackend.isEmpty()) {
+			NativeApp.setGraphicsBackendOverride(graphicsBackend);
+			Log.i(TAG, "Graphics backend override requested by host: " + graphicsBackend);
+		}
 		super.onCreate(savedInstanceState);
 
 		if (m_hasNoNativeBinary) {
